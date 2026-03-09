@@ -2,14 +2,20 @@
 
 // --- Header — logo, nav links, hero name block ---
 
-const NAV_LINKS = [
-  { label: 'NETWORKS',    href: '#networks'    },
-  { label: 'CODE',        href: '#code'        },
-  { label: 'SECURITY',    href: '#security'    },
-  { label: 'EXPERIMENTS', href: '#experiments' },
+import type { PanelId } from '@/components/layout/CommandCenter'
+
+const NAV_LINKS: { label: string; id: PanelId }[] = [
+  { label: 'NETWORKS',    id: 'networks'    },
+  { label: 'CODE',        id: 'code'        },
+  { label: 'SECURITY',    id: 'security'    },
+  { label: 'EXPERIMENTS', id: 'experiments' },
 ]
 
-export default function Header() {
+interface HeaderProps {
+  onNavClick: (id: PanelId) => void
+}
+
+export default function Header({ onNavClick }: HeaderProps) {
   return (
     <header
       className="flex items-center justify-between px-6 py-3 shrink-0"
@@ -39,12 +45,12 @@ export default function Header() {
 
       {/* --- Nav --- */}
       <nav className="hidden md:flex items-center gap-6">
-        {NAV_LINKS.map(({ label, href }) => (
-          <a
+        {NAV_LINKS.map(({ label, id }) => (
+          <button
             key={label}
-            href={href}
-            className="font-mono text-xs tracking-widest transition-all duration-150 relative group select-none"
-            style={{ color: '#C8A8E9', textDecoration: 'none', letterSpacing: '0.18em' }}
+            onClick={() => onNavClick(id)}
+            className="font-mono text-xs tracking-widest transition-all duration-150 relative group select-none bg-transparent border-none cursor-pointer"
+            style={{ color: '#C8A8E9', letterSpacing: '0.18em', padding: '4px 0' }}
           >
             {label}
             {/* Cyan underline on hover */}
@@ -52,7 +58,7 @@ export default function Header() {
               className="absolute left-0 -bottom-0.5 h-px w-0 group-hover:w-full transition-all duration-200"
               style={{ background: '#00FFE7', boxShadow: '0 0 6px #00FFE7' }}
             />
-          </a>
+          </button>
         ))}
       </nav>
 

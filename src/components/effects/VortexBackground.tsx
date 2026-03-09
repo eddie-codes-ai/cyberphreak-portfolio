@@ -1,6 +1,6 @@
 'use client'
 
-// --- VortexBackground — canvas spiral that always runs behind everything ---
+// --- VortexBackground — medium-rich intensity, always running ---
 
 import { useEffect, useRef } from 'react'
 
@@ -24,7 +24,6 @@ export default function VortexBackground() {
     resize()
     window.addEventListener('resize', resize)
 
-    // --- Particle ring config ---
     const RINGS    = 5
     const PER_RING = 60
     const CX       = () => canvas!.width  / 2
@@ -40,38 +39,36 @@ export default function VortexBackground() {
         const spread     = 18 + r * 6
 
         for (let p = 0; p < PER_RING; p++) {
-          const angle   = (p / PER_RING) * Math.PI * 2 + t * speed * (r % 2 === 0 ? 1 : -1)
-          const wobble  = Math.sin(t * 0.8 + r * 1.3 + p * 0.2) * spread
-          const radius  = baseRadius + wobble
-          const x       = CX() + Math.cos(angle) * radius
-          const y       = CY() + Math.sin(angle) * radius
+          const angle  = (p / PER_RING) * Math.PI * 2 + t * speed * (r % 2 === 0 ? 1 : -1)
+          const wobble = Math.sin(t * 0.8 + r * 1.3 + p * 0.2) * spread
+          const radius = baseRadius + wobble
+          const x      = CX() + Math.cos(angle) * radius
+          const y      = CY() + Math.sin(angle) * radius
+          const pct    = p / PER_RING
 
-          // Colour cycling: violet → pink → cyan
-          const hue     = ((t * 0.05 + r * 40 + p * 2) % 360)
-          // Map hue to our palette — keep it in 260–300 (violet) and 180 (cyan) zones
-          const pct     = (p / PER_RING)
           let color: string
           if (pct < 0.33) {
-            color = `rgba(188,19,254,${0.15 + 0.1 * Math.sin(t + p)})`
+            color = `rgba(188,19,254,${0.42 + 0.18 * Math.sin(t + p)})`
           } else if (pct < 0.66) {
-            color = `rgba(0,255,231,${0.1 + 0.08 * Math.cos(t + p)})`
+            color = `rgba(0,255,231,${0.35 + 0.15 * Math.cos(t + p)})`
           } else {
-            color = `rgba(255,0,255,${0.12 + 0.07 * Math.sin(t * 1.2 + p)})`
+            color = `rgba(255,0,255,${0.38 + 0.16 * Math.sin(t * 1.2 + p)})`
           }
 
-          const size = 1 + Math.sin(t * 0.5 + p * 0.3 + r) * 0.8
+          const size = 2.2 + Math.sin(t * 0.5 + p * 0.3 + r) * 1.1
 
           ctx.beginPath()
-          ctx.arc(x, y, Math.max(0.2, size), 0, Math.PI * 2)
+          ctx.arc(x, y, Math.max(0.4, size), 0, Math.PI * 2)
           ctx.fillStyle = color
           ctx.fill()
         }
       }
 
-      // Subtle radial glow at center
-      const grad = ctx.createRadialGradient(CX(), CY(), 0, CX(), CY(), 260)
-      grad.addColorStop(0,   'rgba(188,19,254,0.06)')
-      grad.addColorStop(0.5, 'rgba(0,255,231,0.03)')
+      // Center glow
+      const grad = ctx.createRadialGradient(CX(), CY(), 0, CX(), CY(), 300)
+      grad.addColorStop(0,   'rgba(188,19,254,0.16)')
+      grad.addColorStop(0.4, 'rgba(0,255,231,0.08)')
+      grad.addColorStop(0.7, 'rgba(255,0,255,0.04)')
       grad.addColorStop(1,   'transparent')
       ctx.fillStyle = grad
       ctx.fillRect(0, 0, canvas.width, canvas.height)

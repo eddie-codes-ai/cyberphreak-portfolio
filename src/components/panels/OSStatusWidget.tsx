@@ -2,10 +2,11 @@
 
 // --- OSStatusWidget — floating draggable system panel ---
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { useUptime } from '@/hooks/useUptime'
-import { OS_NAME, ACTIVE_NODES_COUNT, CONTACT_EMAIL } from '@/lib/constants'
+import { OS_NAME, ACTIVE_NODES_COUNT } from '@/lib/constants'
+import ContactModal from '@/components/ui/ContactModal'
 
 // --- Mini world map dots (approximate lat/lon → canvas x/y) ---
 const MAP_DOTS = [
@@ -104,8 +105,10 @@ function WorldMap() {
 
 export default function OSStatusWidget() {
   const uptime = useUptime()
+  const [showContact, setShowContact] = useState(false)
 
   return (
+    <>
     <motion.div
       drag
       dragMomentum={false}
@@ -184,8 +187,8 @@ export default function OSStatusWidget() {
         </div>
 
         {/* Contact button */}
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
+        <button
+          onClick={() => setShowContact(true)}
           className="block w-full text-center font-mono py-2 transition-all duration-150"
           style={{
             fontSize: 10,
@@ -193,7 +196,8 @@ export default function OSStatusWidget() {
             background: 'rgba(0,255,231,0.06)',
             border: '1px solid rgba(0,255,231,0.3)',
             letterSpacing: '0.2em',
-            textDecoration: 'none',
+            cursor: 'pointer',
+            width: '100%',
           }}
           onMouseEnter={e => {
             const el = e.currentTarget
@@ -207,8 +211,12 @@ export default function OSStatusWidget() {
           }}
         >
           ▶ CONTACT
-        </a>
+        </button>
       </div>
     </motion.div>
+
+    {/* Contact modal — outside motion.div so it covers full screen */}
+    {showContact && <ContactModal onClose={() => setShowContact(false)} />}
+    </>
   )
 }
