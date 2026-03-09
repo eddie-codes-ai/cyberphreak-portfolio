@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
+/* --- FONT VARIABLES --- */
+@theme {
+  --font-display: var(--font-orbitron), monospace;
+  --font-mono:    var(--font-share-tech-mono), monospace;
+  --font-retro:   var(--font-vt323), monospace;
+
+  /* --- COLOR TOKENS --- */
+  --color-cp-bg:     #0F051D;
+  --color-cp-violet: #BC13FE;
+  --color-cp-pink:   #FF00FF;
+  --color-cp-pink-alt: #FF2D9B;
+  --color-cp-cyan:   #00FFE7;
+  --color-cp-red:    #FF4444;
+  --color-cp-yellow: #FFE600;
+  --color-cp-green:  #00FF88;
+  --color-cp-panel:  rgba(26, 26, 27, 0.85);
+  --color-cp-border: rgba(188, 19, 254, 0.4);
+  --color-cp-text:   #C8A8E9;
+}
+
+/* --- CSS VARIABLES --- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:         #0F051D;
+  --violet:     #BC13FE;
+  --pink:       #FF00FF;
+  --pink-alt:   #FF2D9B;
+  --cyan:       #00FFE7;
+  --threat-red: #FF4444;
+  --yellow:     #FFE600;
+  --green:      #00FF88;
+  --panel:      rgba(26, 26, 27, 0.85);
+  --border:     rgba(188, 19, 254, 0.4);
+  --text:       #C8A8E9;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* --- BASE --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono), 'Share Tech Mono', monospace;
+  cursor: crosshair;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* --- SCANLINES --- */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.13) 2px,
+    rgba(0, 0, 0, 0.13) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* --- PANEL BASE --- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.panel:hover {
+  border-color: var(--violet);
+  box-shadow: 0 0 20px rgba(188, 19, 254, 0.3),
+              inset 0 0 20px rgba(188, 19, 254, 0.05);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--violet), transparent);
+  opacity: 0.7;
+}
+
+/* --- GLOW UTILITIES --- */
+.glow-violet { text-shadow: 0 0 20px var(--violet), 0 0 40px rgba(188, 19, 254, 0.5); }
+.glow-cyan   { text-shadow: 0 0 15px var(--cyan); }
+.glow-pink   { text-shadow: 0 0 15px var(--pink); }
+
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--violet); }
+
+/* --- GLITCH EDGES --- */
+.glitch-edge-left,
+.glitch-edge-right {
+  position: fixed;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.glitch-edge-left  { left: 0; }
+.glitch-edge-right { right: 0; }
+
+/* --- REACT FLOW OVERRIDES --- */
+.react-flow__renderer { background: transparent !important; }
+.react-flow__background { display: none !important; }
