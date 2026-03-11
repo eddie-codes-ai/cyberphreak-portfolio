@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(req: NextRequest) {
   try {
     const { name, email, message } = await req.json()
@@ -11,9 +9,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
 
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
     await resend.emails.send({
       from:    'CYBERPHREAK <onboarding@resend.dev>',
-      to:      ['hello@chaoticreative.dev'],   // ← update to your real email
+      to:      ['hello@chaoticreative.dev'],
       replyTo: email,
       subject: `[CYBERPHREAK] New message from ${name}`,
       html: `
